@@ -9,7 +9,6 @@ class CommandType:
     l = ""
     for tt in self.token_types:
       l = l + f"{tt.name} "
-    return "Command:\n" + \
-     f"Name: {self.name}\n" \
+    return f"Name: {self.name}\n" \
      f"Token types: {l}\n" \
      "Server only?: " + "Yes" if (self.server_only) else "No"
