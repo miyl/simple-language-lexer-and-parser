@@ -35,19 +35,21 @@ class ChatLanguage(Language):
       # Edit: Or maybe none of them should and I should handle it afterwards in the main program?
 
       # TODO: Remember to lowercase the input, so both JOIN, join and JoIn works? Or maybe not if it's entirely computer handled?
-      # TODO: Fix data and list
-      joinTokens = [ super().gtt("join"), super().gtt("string"), super().gtt("comma"), super().gtt("ip"), super().gtt("colon"), super().gtt("number") ] # string, or should I create a dedicated username string?
-      okTokens   = [ super().gtt("ok") ]
-      erTokens   = [ super().gtt("er"), super().gtt("number"), super().gtt("colon"), super().gtt("string") ]
-      dataTokens = [] # recursive if the string TT shouldn't have spaces.
-      imavTokens = [ super().gtt("imav") ]
-      quitTokens = [ super().gtt("quit") ]
-      listTokens = [] # recursive! TODO: Look into the python logic for these recursive types
+      ONE = 1 # Could just write 1 and 0 directly but these stand out more, and for now I just need these two specifically, not 0-9
+      ANY = 0
+      joinTokens = [ (super().gtt("join"), ONE), (super().gtt("string"), ONE), (super().gtt("comma"), ONE), (super().gtt("ip"), ONE), (super().gtt("colon"), ONE), (super().gtt("number"), ONE) ] # string, or should I create a dedicated username string?
+      okTokens   = [ (super().gtt("ok"), ONE) ]
+      erTokens   = [ (super().gtt("er"), ONE), (super().gtt("number"), ONE), (super().gtt("colon"), ONE), (super().gtt("string"), ONE) ]
+      # datatokens is recursive if the string TT shouldn't have spaces. Technically this could just be "string, ANY", but keeping the username separate for now, since it probably should be turned into its own type later
+      dataTokens = [ (super().gtt("data"), ONE), (super().gtt("string"), ONE), (super().gtt("string"), ANY) ]
+      imavTokens = [ (super().gtt("imav"), ONE) ]
+      quitTokens = [ (super().gtt("quit"), ONE) ]
+      listTokens = [ (super().gtt("list"), ONE), (super().gtt("string"), ANY) ] # recursive!
 
       self.command_types = [ CommandType("join", joinTokens, False), # Need to validate port afterwards
                              CommandType("ok",   okTokens,   True),
                              CommandType("er",   erTokens,   True),
-                             #CommandType("data", dataTokens, False), # Max 250 characters
+                             CommandType("data", dataTokens, False), # Max 250 characters
                              CommandType("imav", imavTokens, False),
-                             CommandType("quit", quitTokens, False)]
-                             #CommandType("list", listTokens, True)]
+                             CommandType("quit", quitTokens, False),
+                             CommandType("list", listTokens, True)]

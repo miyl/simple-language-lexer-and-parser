@@ -13,12 +13,13 @@ class Parser:
     self.token_types = tts
     self.command_types = cts
 
-  # public boolean hasServerOnlyCommands( List<Command> commands ) {
-  #   for (Command c : commands) {
-  #     if ( t.getType().getServerOnly() ) return true; 
+  # This was originally written in java, I still haven't decided whether it's relevant or whether it should just be deleted or implemented a totally different way
+  # def hasServerOnlyCommands( commands ):
+  #   for (c in commands) {
+  #     if ( t.getType().getServerOnly() ) return True
   #   }
-  #   return false; // If no Commands are server only
-  # }
+  #   return False // If no Commands are server only
+  #
 
  # Returns a Command? Or just a boolean (true when it matches one)? Maybe this should be rewritten to really only expect a single command, and then a different method to expect/deal with multiple ones in succession
   def parseSingle(self, tokens):
@@ -26,7 +27,7 @@ class Parser:
     c = None
     # Loop through all CommandTypes to see if one matches the first token received
     for ct in self.command_types:
-      if (tokens[0].token_type.name == ct.token_types[0].name):
+      if (tokens[0].token_type.name == ct.token_types[0][0].name):
         debug("Found matching command!")
         # We found a matching command!
         c = ct
@@ -37,12 +38,27 @@ class Parser:
 
     # Loop through the identified Command's TokenTypes to see if they all match the received token list
     tts_received = []
+    # Isolate just the token types from all tokens received
     for t in tokens: tts_received.append(t.token_type)
-    for ctt, ttt in zip(c.token_types, tts_received):
-      if ctt.name != ttt.name: debug(f"Token list didn't match Command: {c.name}"); sys.exit(-1)
 
-    # If the conditional above never fired it means the tokens received at least matches a full command (tho)
-    debug(f"Successfully parsed an instance of Command: {c.name}")
+    # Loop through all token_types of the identified command to see if they match the lexed token list
+    i = 0
+    for ctt in c.token_types:
+      # Check if the next received token matches the command's
+      if ctt[0].name != tts_received[i].name: debug(f"Token list didn't match Command: {c.name}"); sys.exit(-1)
+      # Special handling for TokenTypes in a command that should be allowed to be there more than once
+      if ctt[1] != 1:
+        # a value of zero means any number, any other positive value means that specific number
+        num = None if ctt[1] == 0 else ctt[1]+1
+        for t in tts_received[i:num]:
+          if ctt[0].name == t.name:
+            i+=1
+          else:
+            i-=1; break # If the current token doesn't match the type take one step back in the list, since a step forward will be taken in the next line
+      i+=1
 
-    # Written to assume we might have multiple commands, so we only create a command from the number of tokens matching the CommandType.
-    return Command(c, tokens[0:len(c.token_types)+1]);
+    if len(tts_received) > i: debug(f"A Command was fully matched but the received list contain additional tokens?: {c.name}"); sys.exit(-1)
+    # If both conditionals above never fired it means the tokens received matches a full command
+    else: debug(f"Successfully parsed an instance of Command: {c.name}")
+
+    return Command(c, tokens);

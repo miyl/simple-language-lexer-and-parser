@@ -16,6 +16,7 @@ class LexerTester:
     testText3 = "mjav" # Invalid input
     testText4 = " JOIN " # Invalid input
     testText5 = "JOIN testUser, 123.123.123.123:8000" # Valid input
+    testText6 = "LIST woo sim sala locus sfs" # Valid input
 
     lang = ChatLanguage()
     print("ChatLanguage initialized")
@@ -24,7 +25,7 @@ class LexerTester:
     print("About to Lex")
 
     # token list
-    self.tokens = l.lex(testText5)
+    self.tokens = l.lex(testText6)
 
     if (self.tokens == None):
       print("The input is a different language than the one expressed by the token types.")
