@@ -34,8 +34,7 @@ class ChatLanguage(Language):
       # Should the lexer or parser handle/validate max number of characters?
       # Edit: Or maybe none of them should and I should handle it afterwards in the main program?
 
-      # TODO: Remember to lowercase the input, so both JOIN, join and JoIn works? Or maybe not if it's entirely computer handled?
-      ONE = 1 # Could just write 1 and 0 directly but these stand out more, and for now I just need these two specifically, not 0-9
+      ONE = 1 # Could just write 1 and 0 directly but these stand out more in the source code, and for now I just need these two specifically, not 0-9
       ANY = 0
       joinTokens = [ (super().gtt("join"), ONE), (super().gtt("string"), ONE), (super().gtt("comma"), ONE), (super().gtt("ip"), ONE), (super().gtt("colon"), ONE), (super().gtt("number"), ONE) ] # string, or should I create a dedicated username string?
       okTokens   = [ (super().gtt("ok"), ONE) ]
@@ -46,7 +45,7 @@ class ChatLanguage(Language):
       quitTokens = [ (super().gtt("quit"), ONE) ]
       listTokens = [ (super().gtt("list"), ONE), (super().gtt("string"), ANY) ] # recursive!
 
-      self.command_types = [ CommandType("join", joinTokens, False), # Need to validate port afterwards
+      self.command_types = [ CommandType("join", joinTokens, False), # Need to validate port (1-65536) and ip (1-254) afterwards
                              CommandType("ok",   okTokens,   True),
                              CommandType("er",   erTokens,   True),
                              CommandType("data", dataTokens, False), # Max 250 characters

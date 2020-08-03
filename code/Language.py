@@ -6,12 +6,11 @@ class Language:
 
   # Get TokenType by name
   def gtt(self, name):
-    #return tts.stream().filter(e -> e.getName().equals(name)).findFirst().get()
     return next(x for x in self.token_types if x.name == name)
 
+  # TODO: This currently isn't used at all?!
   # Get CommandType by name
   def gct(self, name):
-    #return cts.stream().filter(e -> e.getName().equals(name)).findFirst().get()
     return next(x for x in self.command_types if x.name == name)
 
   # Should the lexer or parser handle/validate max number of characters?

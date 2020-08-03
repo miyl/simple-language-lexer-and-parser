@@ -54,7 +54,7 @@ class Parser:
           if ctt[0].name == t.name:
             i+=1
           else:
-            i-=1; break # If the current token doesn't match the type take one step back in the list, since a step forward will be taken in the next line
+            i-=1; break # If the current token doesn't match the type take one step back in the list to counteract the step forward taken in the next line
       i+=1
 
     if len(tts_received) > i: debug(f"A Command was fully matched but the received list contain additional tokens?: {c.name}"); sys.exit(-1)
